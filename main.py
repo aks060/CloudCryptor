@@ -88,6 +88,8 @@ def encfile(path):
 		finalpath+=('"'+i+'" ')
 		encpath+=('"'+i+'.pgp" ')
 	os.system('gpg -e -r "'+gpgudi+'" --always-trust --multifile --yes '+finalpath)
+	os.system('mkdir -p cryptoupload')
+	os.system('mv *.gpg cryptoupload/')
 	upload(encpath)
 
 def listfile(path='', showdir=0):
