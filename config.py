@@ -1,10 +1,10 @@
 import os
 
 if os.geteuid()==0:
-	print "Please run as root"
+	print "Working on it"
 	print("Installing Necessary package....")
 	os.system("apt install rclone gpg")
 	print("\nInstalling pyfiglet...")
 	os.system("pip3 install pyfiglet")
 else:
-	print "working fine"
+	print "Please Run as root"
