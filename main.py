@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import pyfiglet
 import os, threading, sys
 
@@ -70,8 +71,8 @@ def upload(files):
 	os.system('mkdir -p cryptoupload')
 	dest=''
 	dest=input('Upload destination (Default root): ')
-	os.system('mv '+files+' cryptoupload/')
-	ret=os.system('rclone copy -P cryptoupload/ '+drivename+':'+dest)
+	#os.system('mv '+files+' cryptoupload/')
+	ret=os.system('rclone copy -P cryptoupload/ '+drivename+':"'+dest+'"')
 	if ret!=0:
 		print("\n\nSorry some error occured")
 		return
@@ -80,16 +81,31 @@ def upload(files):
 	print("\n\nTask Completed successfully...")
 
 def encfile(path):
+	print("Working on path: ", path)
+	os.system('rm -r cryptoupload/')
 	gpgudi=gtuid()
 	finalpath=''
 	encpath=''
+	finalenc=[]
 	for i in path:
 		i=os.path.abspath(i.strip())
-		finalpath+=('"'+i+'" ')
+		finalpath+=(i+' ')
 		encpath+=('"'+i+'.pgp" ')
-	os.system('gpg -e -r "'+gpgudi+'" --always-trust --multifile --yes '+finalpath)
+		#finalpath.append(encpath)
+	ret=os.system('gpg -e -r "'+gpgudi+'" --always-trust --multifile --yes '+finalpath)
+	'''if ret!=0:
+		print("\n\nSome error occured. (If you are trying to encrypt the directory then first zip it or verify it should not contain other directory in it\n")
+		exit()'''
 	os.system('mkdir -p cryptoupload')
-	os.system('mv *.gpg cryptoupload/')
+	for i in path:
+		print('value of i: '+i[:-1])
+		if os.path.isdir(i[:-1]):
+			cmd='mv "'+i[:-1]+'/"*.gpg cryptoupload/'
+			print("trying to execute: "+cmd)
+			os.system(cmd)
+		else:
+			os.system('mv "'+i+'.gpg" cryptoupload/')
+	#os.system('mv *.gpg cryptoupload/')
 	upload(encpath)
 
 def listfile(path='', showdir=0):
@@ -114,7 +130,7 @@ def downfile():
 	fname=fname.split(",")
 	for i in fname:
 		i=i.strip()
-		os.system("rclone copy -P "+dname+":"+i+" Clouddownload/")
+		os.system("rclone copy -P "+dname+':"'+i+'" Clouddownload/')
 	os.system('gpg -d -r "'+guid+'" --always-trust --multifile --yes Clouddownload/*.gpg')
 	os.system('rm Clouddownload/*.gpg')
 	print("\n\nFile Downloaded successfully in Folder Clouddownload...")
@@ -140,12 +156,20 @@ def welcome():
 		path=path.split(',')
 		flag=1
 		print("Files: \n")
-		for i in path:
+		for j in range(0, len(path)):
+			i=path[j]
 			i=os.path.abspath(i.strip())
 			print(i)
 			if not os.path.exists(i):
 				flag=0
 				break
+			if os.path.isdir(i):
+				choice=int(input("The given path is directory. \n[1] Zip the folder then upload\n[2]upload files one by one\n: "))
+				if choice==1:
+					print("Working on it. ")
+					exit()
+				elif choice==2:
+					path[j]+='/*'
 		if flag==1:
 			enc=input("\nEncrypt this ? (y/n): ")
 			if enc=='y' or enc=='Y':
