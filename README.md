@@ -1,4 +1,4 @@
-# CloudDecryptor
+# CloudCryptor
 
 #Installation Guide
 
