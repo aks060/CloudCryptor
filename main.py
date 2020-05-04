@@ -3,7 +3,6 @@ import pyfiglet
 import os, threading, sys
 
 args=sys.argv
-print(args)
 
 drivename=''
 gpgudi=''
