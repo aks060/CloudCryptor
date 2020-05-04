@@ -1,0 +1,38 @@
+.\" Manpage for CRYPTOCLOUD.
+.TH  "CryptoCloud man page"
+.SH NAME
+CryptoCloud \- TO upload,download,config your local files to cloud storage
+.SH SYNOPSIS
+python3 crypto [options][arguments]
+.SH DESCRIPTION
+CryptoCloud is a tool developed in python to directly upload, download, check with the encryption to the cloud from your local system.
+.SH OPTIONS
+-config: To config your cloud account
+         -name: To specify your cloud drive name 
+
+-upload: To uplaod the files on the cloud drives
+         -path: To specify the path of the files 
+         -zip: If it is directory you can zip it and upload as zip
+         -obo: If it is directory you can upload files of the directory one by one 
+         -enc: To encrypt the files 
+
+-download: To download files from the drive 
+           -p: Enter file path separated by comma(,) [$<path> to list files]
+
+	        eg: $/ : will list all the files in root dir
+
+	            $/dir1 : will list all the files in /dir1
+
+
+.SH EXAMPLES
+
+To config : main.py -config -name <drive name>
+
+To upload : main.py -upload -path <path> -zip/obo -enc
+
+To download : main.py -download -p <path>
+
+.SH SEE ALSO
+CryptoCloud.debian(8) 
+.SH BUGS
+No known bugs.
